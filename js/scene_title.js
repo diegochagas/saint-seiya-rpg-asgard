@@ -48,8 +48,9 @@ SceneTitle.prototype = {
     } else {
       Audio_.sys('decision');
       this.cmd.active = false;
+      Audio_.fadeOutBgm(300);
       Screen.fadeOut(20);
-      this.pending = function () { location.reload(); };
+      this.pending = function () { Game.exitGame(); };
     }
   },
   resume: function () { this.cmd.active = true; },

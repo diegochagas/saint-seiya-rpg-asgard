@@ -36,6 +36,7 @@ var I18N = {
     noSaves:      { en: 'No saved games.', pt: 'Nenhum jogo salvo.' },
     quitConfirm:  { en: 'Return to title screen?', pt: 'Voltar à tela de título?' },
     languageName: { en: 'English', pt: 'Português' },
+    exited:       { en: 'Game closed. You can close this tab.', pt: 'Jogo encerrado. Pode fechar esta aba.' },
   },
 
   /* English replacements for the database "terms" (RPG Maker 2000 vocabulary). */

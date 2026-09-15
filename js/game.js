@@ -109,6 +109,23 @@ var Game = {
   openLoad: function () { this.push(new SceneFile('load')); },
   gameOver: function () { this.replace(new SceneGameOver()); },
   toTitle: function () { Audio_.stopBgm(); Screen.reset(); this.replace(new SceneTitle()); },
+  /* "Exit": ask the local dev server to stop (ignored on static hosting), then show a closing screen */
+  exitGame: function () {
+    Audio_.stopBgm();
+    try { fetch('/__exit', { method: 'POST' }).catch(function () {}); } catch (e) {}
+    this.replace({
+      update: function () {},
+      draw: function (ctx) {
+        ctx.fillStyle = '#000';
+        ctx.fillRect(0, 0, CONFIG.SCREEN_W, CONFIG.SCREEN_H);
+        Font.draw(ctx, I18N.t('exited'), CONFIG.SCREEN_W / 2, 112, 0, { align: 'center' });
+      },
+    });
+    Screen.fade = 1;
+    this.running = false;
+    this.draw();
+    try { window.close(); } catch (e) {}
+  },
   innSleep: function (cb) {
     var mapScene = this.scenes[0];
     var self = this;

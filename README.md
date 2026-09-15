@@ -40,7 +40,7 @@ assets/                    converted graphics (RGBA PNG), audio (OGG) and bitmap
 tools/convert.py           RPG Maker 2000 project -> data/ + assets/
 tools/fon2png.py           Windows .fon bitmap font -> PNG atlas + metrics
 tools/lcf/                 generic LCF reader driven by liblcf's schema CSVs
-tools/serve.py             no-cache static server for development
+tools/serve.py             no-cache dev server; the title "Exit" command stops it
 ```
 
 ## Regenerating the data
