@@ -1,0 +1,3 @@
+Pillow>=9
+# MIDI rendering (install with --no-deps; the optional pyaudio dependency is not needed for offline rendering)
+tinysoundfont>=0.3
