@@ -23,11 +23,11 @@ var ENGINE_SCRIPTS = [
 ];
 
 (function () {
-  var base = document.currentScript.src.replace(/boot\.js(\?.*)?$/, '');
+  var here = document.currentScript, base = here.src.replace(/boot\.js(\?.*)?$/, '');
   ENGINE_SCRIPTS.forEach(function (file) {
     var tag = document.createElement('script');
     tag.src = base + file;
     tag.async = false;
-    document.body.appendChild(tag);
+    here.parentNode.appendChild(tag);
   });
 })();

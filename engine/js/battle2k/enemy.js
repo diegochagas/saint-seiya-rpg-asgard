@@ -36,10 +36,7 @@ Battle2kEnemy.prototype = {
   hitChance: function () { return 90; },
   /* percent: the database stores "1 in N" */
   critChance: function () { return this.data.critical_hit ? 100 / Math.max(1, this.data.critical_hit_chance) : 0; },
-  rankRate: function (ranks, id, rates) {
-    var rank = ranks[id - 1] == null ? 2 : ranks[id - 1];
-    return rates[rank];
-  },
+  rankRate: Actor.prototype.rankRate,   /* same A..E table lookup as actors (C when missing) */
   attributeRate: function (attrId) {
     var at = DB.attribute(attrId);
     return at ? this.rankRate(this.data.attribute_ranks, attrId, [at.a_rate, at.b_rate, at.c_rate, at.d_rate, at.e_rate]) : 100;
