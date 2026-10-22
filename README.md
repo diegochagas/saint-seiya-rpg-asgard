@@ -33,25 +33,25 @@ Test entry points: `?map=3&x=19&y=28` (start on a map), `?battle=3` (start a bat
 ## Checks
 
 ```bash
-scripts/check                 # engine copy intact, game contract tests, clean-code audit
+scripts/check                 # engine + game contract tests, converter tests, clean-code audit
 npx playwright test           # title, maps, battle, save/load (+ an old save), screenshots in e2e/screenshots/
 ```
 
 ## Architecture
 
-The runtime and converter are shared with the RPG Maker 2003 remake *holy-avenger*: they live in
-the sibling repo `rpgmaker-web-engine` and are vendored here as `engine/` (`engine/VERSION` names
-the commit). This repo keeps only what is specific to this game. Never edit `engine/` here; fix
-the engine repo, commit, and run `../rpgmaker-web-engine/scripts/vendor-engine .`.
+The runtime and converter live in `engine/` and belong to this repo. They started as an engine
+shared with the RPG Maker 2003 remake *holy-avenger*, which keeps its own copy, so the engine still
+carries the 2003 ATB battle (`engine/js/battle/`) next to the 2000 one; `Loader.is2k3()` picks
+between them.
 
 ```
 index.html, game/          page shell; game/config.js (save keys), game/terms.js (English terms:
                            Cosmo, Cloth, Technique...); index.html loads them, then engine/boot.js
-engine/                    vendored shared engine: js/ runtime, tools/ converter + dev server,
+engine/                    engine: js/ runtime, tools/ converter + dev server,
                            testing/ (vm harness and the game contract tests), style.css
 data/                      converted game data (database.json, maptree.json, maps/*.json, manifest.json)
 assets/                    converted graphics (RGBA PNG), audio (OGG) and bitmap fonts
-tests/, e2e/               game contract tests (node --test), Playwright specs + screenshots
+tests/, e2e/               engine unit tests, game contract and converter tests, Playwright specs
 ```
 
 ```mermaid

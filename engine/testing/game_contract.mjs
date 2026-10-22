@@ -15,7 +15,7 @@ function pageScripts() {
 }
 
 /**
- * Registers the contract tests for the game repo this module was vendored into.
+ * Registers the contract tests for this game repo.
  * @param {{gameId: string, engine: "2k"|"2k3"}} expected
  * example: checkGameRepo({ gameId: "holy_avenger", engine: "2k3" })
  */

@@ -1,12 +1,14 @@
 # Saint Seiya RPG - Asgard Chapter (browser remake)
 
 Vanilla JS remake of the RPG Maker 2000 fan game *Saint Seiya RPG - Asgard Chapter*. No RPG Maker code runs: the
-shared engine's converter turns the original project into JSON + PNG/OGG/WebM, and the shared
-runtime reproduces RPG_RT's behaviour (EasyRPG Player sources were a behaviour reference only).
+converter in `engine/tools/` turns the original project into JSON + PNG/OGG/WebM, and the runtime
+in `engine/js/` reproduces RPG_RT's behaviour (EasyRPG Player sources were a behaviour reference only).
 
-- Engine: `engine/` is a vendored copy of the sibling repo `rpgmaker-web-engine` (runtime,
-  converter, test harness). **Never edit it here**: fix the engine repo, commit, then run
-  `../rpgmaker-web-engine/scripts/vendor-engine .`; `scripts/check` fails if `engine/` was touched.
+- Engine: `engine/` (runtime, converter, test harness) is this repo's own code. It started as the
+  engine shared with *holy-avenger*; the two copies now evolve separately, so fix engine bugs here
+  (and port the fix by hand if the other game needs it). Engine differences go through
+  `Loader.is2k3()` (`data/manifest.json` `engine`); `Game.startBattle` picks `engine/js/battle/`
+  (2003 side-view ATB) or `engine/js/battle2k/` (2000 front view).
 - This repo's own code: `game/config.js` (`GAME_INFO.id`, the save keys), `game/terms.js` (English
   database terms with the Saint Seiya vocabulary: Cosmo, Cloth, Technique), `index.html`, `tests/`, `e2e/`.
 - The battle is RPG Maker 2000's front view (`engine/js/battle2k/`), chosen because
@@ -19,9 +21,9 @@ runtime reproduces RPG_RT's behaviour (EasyRPG Player sources were a behaviour r
 
 This repo follows the dev-playbook (`~/.claude/skills/dev-playbook/PLAYBOOK.md`).
 
-- One gate: `scripts/check` (engine copy intact + game contract tests + clean-code audit; engine
-  unit tests run in rpgmaker-web-engine). The pre-push
-  hook runs it (`git config core.hooksPath .githooks`). Never push with `--no-verify`.
+- One gate: `scripts/check` (engine unit tests + game contract tests with `node --test`, converter
+  tests with unittest, clean-code audit). The pre-push hook runs it
+  (`git config core.hooksPath .githooks`). Never push with `--no-verify`.
 - Bugs: write a failing regression test first, then fix.
 - Never weaken, skip or delete a test to make it pass.
 - UI changes: run the Playwright e2e (`npx playwright test`) and attach desktop (1280) + mobile (375)
@@ -35,15 +37,19 @@ This repo follows the dev-playbook (`~/.claude/skills/dev-playbook/PLAYBOOK.md`)
 
 ## Clean code (dev-playbook CLEAN-CODE.md)
 
-Language: vanilla JS (script-tag globals, ES5 style like the engine) for `game/`, ES modules for `tests/` and `e2e/`.
+Language: vanilla JS (script-tag globals, ES5 style) for `game/` and `engine/js/`, Python 3 for `engine/tools/`,
+ES modules for `tests/` and `e2e/`.
 Formatter: none enforced yet; match the surrounding code, don't discuss style.
 
 - Functions 4–20 lines. Files ≤300 lines, hard max 500. `scripts/clean-code-audit --strict` runs in
-  `scripts/check` (it measures file length for JS and function length for Python).
-- One responsibility per module. Layout: `game/` (this game's settings), `engine/` (vendored),
-  `tests/`, `e2e/`. Engine layout rules live in rpgmaker-web-engine's AGENTS.md.
+  `scripts/check` (it measures file length for JS and function length for Python and bash).
+- One responsibility per module. Layout: `game/` (this game's settings), `engine/js/<concern>.js`,
+  `engine/js/events/` (event commands), `engine/js/battle/` (2003 battle), `engine/js/battle2k/`
+  (2000 battle), `engine/tools/rmconv/` (converter steps), `engine/testing/` (vm harness and game
+  contract), `tests/` (engine unit tests, game contract, converter tests), `e2e/`.
 - Names specific and searchable (<5 grep hits). Banned: `data`, `handler`, `utils`, `Manager`, `Service`
-  (existing `data` fields mirror RPG Maker's own naming; don't add new ones).
+  (existing `data` fields mirror RPG Maker's own naming; don't add new ones). Both battle systems
+  share one global scope, so 2000-battle globals carry a `Battle2k`/`BATTLE2K_` prefix.
 - Types explicit: JSDoc `@param`/`@returns` on functions other files call; type hints on every Python `def`.
 - Early returns, max 2 nested levels. Extract duplicated logic the second time it appears.
 - Errors include the offending value and the expected shape
