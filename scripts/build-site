@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# scripts/build-site <out dir>: copy what the browser loads into <out dir> for GitHub Pages.
+# engine/tools (converter, dev server) and engine/testing (vm harness) stay out of the site.
+set -euo pipefail
+cd "$(dirname "$0")/.."
+out="${1:?usage: scripts/build-site <out dir>}"
+rm -rf "$out"
+mkdir -p "$out"
+cp -r index.html game data assets "$out"/
+rsync -a --exclude tools --exclude testing engine "$out"/
+echo "build-site: $(find "$out" -type f | wc -l) files in $out"

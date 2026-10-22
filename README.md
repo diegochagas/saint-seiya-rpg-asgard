@@ -30,6 +30,13 @@ the original Portuguese; menu and battle vocabulary switches to English.
 Test entry points: `?map=3&x=19&y=28` (start on a map), `?battle=3` (start a battle with a troop),
 `?party=1,2` (choose the party), `?seed=42` (repeatable random numbers).
 
+## Deploy
+
+Every push to `main` deploys to GitHub Pages once CI passes (`.github/workflows/pages.yml`).
+`scripts/build-site _site` picks what the browser loads: `index.html`, `game/`, `engine/` without
+`tools/` and `testing/`, `data/` and `assets/`. Pages must be on in the repo settings
+(Source: GitHub Actions).
+
 ## Checks
 
 ```bash
