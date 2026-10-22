@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# scripts/check: the single validation gate (pre-push hook and CI run it).
+# The vendored engine must be untouched (its own tests run in rpgmaker-web-engine), then this
+# game's tests with node's built-in runner, then the clean-code audit.
+set -euo pipefail
+cd "$(dirname "$0")/.."
+engine/tools/verify-copy
+node --test "tests/*.test.mjs"
+scripts/clean-code-audit --strict

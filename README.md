@@ -12,7 +12,7 @@ No build step, no dependencies: open `index.html` over HTTP (GitHub Pages works)
 ## Play
 
 ```bash
-python3 tools/serve.py 8090
+python3 engine/tools/serve.py 8090
 ```
 
 Then open <http://localhost:8090>.
@@ -27,37 +27,60 @@ Then open <http://localhost:8090>.
 The **EN/PT** button in the top bar switches the interface language. Dialogue stays in
 the original Portuguese; menu and battle vocabulary switches to English.
 
-## Layout
+Test entry points: `?map=3&x=19&y=28` (start on a map), `?battle=3` (start a battle with a troop),
+`?party=1,2` (choose the party), `?seed=42` (repeatable random numbers).
+
+## Checks
+
+```bash
+scripts/check                 # engine copy intact, game contract tests, clean-code audit
+npx playwright test           # title, maps, battle, save/load (+ an old save), screenshots in e2e/screenshots/
+```
+
+## Architecture
+
+The runtime and converter are shared with the RPG Maker 2003 remake *holy-avenger*: they live in
+the sibling repo `rpgmaker-web-engine` and are vendored here as `engine/` (`engine/VERSION` names
+the commit). This repo keeps only what is specific to this game. Never edit `engine/` here; fix
+the engine repo, commit, and run `../rpgmaker-web-engine/scripts/vendor-engine .`.
 
 ```
-index.html, style.css      page shell
-js/                        runtime (script-tag globals, load order in index.html)
-  config.js  i18n.js  loader.js  input.js  audio.js  gfx.js  font.js  window.js
-  state.js  actor.js  party.js  character.js  map.js  screen.js  message.js
-  interpreter.js  battle_anim.js  scene_*.js  game.js  main.js
+index.html, game/          page shell; game/config.js (save keys), game/terms.js (English terms:
+                           Cosmo, Cloth, Technique...); index.html loads them, then engine/boot.js
+engine/                    vendored shared engine: js/ runtime, tools/ converter + dev server,
+                           testing/ (vm harness and the game contract tests), style.css
 data/                      converted game data (database.json, maptree.json, maps/*.json, manifest.json)
 assets/                    converted graphics (RGBA PNG), audio (OGG) and bitmap fonts
-tools/convert.py           RPG Maker 2000 project -> data/ + assets/
-tools/fon2png.py           Windows .fon bitmap font -> PNG atlas + metrics
-tools/lcf/                 generic LCF reader driven by liblcf's schema CSVs
-tools/serve.py             no-cache dev server; the title "Exit" command stops it
+tests/, e2e/               game contract tests (node --test), Playwright specs + screenshots
+```
+
+```mermaid
+flowchart LR
+  C["engine/tools/convert.py<br/>(once)"] --> D["data/*.json"]
+  C --> A["assets/"]
+  H["index.html: game/config.js,<br/>game/terms.js, engine/boot.js"] --> L["engine/js/loader.js"]
+  D --> L
+  A --> L
+  L --> G["engine/js/game.js<br/>scene stack"]
+  G --> M["map, events, menus,<br/>shop, save/load"]
+  G --> B["RPG Maker 2000 battle<br/>engine/js/battle2k/*"]
 ```
 
 ## Regenerating the data
 
 ```bash
-python3 -m venv --system-site-packages .venv
-.venv/bin/pip install --no-deps -r tools/requirements.txt
-.venv/bin/python tools/convert.py \
+scripts/setup
+.venv/bin/python engine/tools/convert.py \
   --game "/path/to/Saint Seiya RPG - Asgard Chapter" \
   --rtp "/path/to/RTP/2000" \
   --sf2 /usr/share/sounds/sf2/default-GM.sf2
-python3 tools/fon2png.py "/path/to/game/System/Rmg2000.fon" assets/font/rmg2000.png assets/font/rmg2000.json
-python3 tools/fon2png.py "/path/to/game/System/Rm2000.fon"  assets/font/rm2000.png  assets/font/rm2000.json
+python3 engine/tools/fon2png.py "/path/to/game/System/Rmg2000.fon" assets/font/rmg2000.png assets/font/rmg2000.json
+python3 engine/tools/fon2png.py "/path/to/game/System/Rm2000.fon"  assets/font/rm2000.png  assets/font/rm2000.json
 ```
 
 `convert.py` needs Pillow and `ffmpeg`; MIDI music is rendered with `tinysoundfont` and a
-GM SoundFont. Assets missing from the project folder are taken from the RTP folder(s).
+GM SoundFont. Assets missing from the project folder are taken from the RTP folder(s). The shared
+converter reproduces the committed `data/` and images byte for byte (checked 2026-10-21).
 
 ## Engine notes
 
@@ -65,7 +88,9 @@ GM SoundFont. Assets missing from the project folder are taken from the RTP fold
 - Chipset autotiles, passability and terrain follow EasyRPG's documented layout.
 - Text uses the game's own `.fon` fonts with the System graphic's colour cells and a
   fixed 6px advance, so accents render exactly like the original.
-- Battle formulas (hit, critical, damage, variance, EXP curve) follow RPG Maker 2000.
+- Battle formulas (hit, critical, damage, variance, EXP curve) follow RPG Maker 2000. Critical
+  hits use RPG Maker's "1 in N" actor rate plus the weapon bonus (before the shared engine the
+  remake used N as a percentage, which made critical hits far more frequent).
 - Saves live in `localStorage` (15 slots) and store switches, variables, party, items,
   map position, event positions, screen tint and weather.
 
@@ -74,5 +99,5 @@ GM SoundFont. Assets missing from the project folder are taken from the RTP fold
 The game, its story, sprites and music arrangements belong to their original fan
 authors; Saint Seiya is © Masami Kurumada / Toei Animation. Several graphics and songs
 come from the RPG Maker 2000 RTP, whose license restricts use to RPG Maker games. Keep
-that in mind before publishing the `assets/` folder. The runtime code in `js/` and
-`tools/` is original; `tools/lcf/*.csv` come from the liblcf project (MIT).
+that in mind before publishing the `assets/` folder. The runtime code in `engine/` is original;
+`engine/tools/lcf/*.csv` come from the liblcf project (MIT).

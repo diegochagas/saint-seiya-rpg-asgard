@@ -1,0 +1,13 @@
+{
+  "name": "saint-seiya-rpg-asgard",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "scripts/check",
+    "start": "python3 engine/tools/serve.py 8090",
+    "e2e": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.55.0"
+  }
+}

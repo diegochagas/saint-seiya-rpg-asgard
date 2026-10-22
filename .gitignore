@@ -5,3 +5,7 @@ __pycache__/
 venv/
 .DS_Store
 *.wav
+node_modules/
+e2e/screenshots/
+test-results/
+playwright-report/

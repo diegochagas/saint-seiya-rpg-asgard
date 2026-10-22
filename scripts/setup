@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# scripts/setup: idempotent bootstrap for a fresh clone (dev tools only; the game itself needs nothing).
+set -euo pipefail
+cd "$(dirname "$0")/.."
+git config core.hooksPath .githooks
+[[ -d node_modules/@playwright/test ]] || npm install
+npx playwright install chromium
+if [[ ! -x .venv/bin/python ]]; then
+    python3 -m venv --system-site-packages .venv
+fi
+.venv/bin/pip install -q --no-deps -r engine/tools/requirements.txt
+echo "setup done: run scripts/check, then python3 engine/tools/serve.py 8090"

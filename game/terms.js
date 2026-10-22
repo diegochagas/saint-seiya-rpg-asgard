@@ -1,0 +1,47 @@
+/* Database "terms" tables for Saint Seiya RPG - Asgard Chapter (game-specific; the engine reads
+   them through I18N). TERMS_EN replaces the Portuguese terms when EN is active and keeps the
+   Saint Seiya vocabulary (Cosmo, Cloth, Technique). Moved from js/i18n.js (a977249). */
+var TERMS_EN = {
+  encounter: ' appeared!', special_combat: 'Special combat', escape_success: 'Escaped!',
+  escape_failure: 'Cannot escape!', victory: 'Victory!', defeat: 'Defeat…',
+  exp_received: ' EXP received', gold_recieved_a: '', gold_recieved_b: ' gold found',
+  item_recieved: ' found', attacking: ' attacks', enemy_critical: 'Critical hit!',
+  actor_critical: 'Critical hit!', defending: ' defends', observing: ' watches',
+  focus: ' focuses', autodestruction: ' self-destructs', enemy_escape: ' flees',
+  enemy_transform: ' transforms', enemy_damaged: ' takes ', enemy_undamaged: ' takes no damage',
+  actor_damaged: ' takes ', actor_undamaged: ' takes no damage', skill_failure_a: ' fails',
+  skill_failure_b: ' fails', skill_failure_c: ' fails', dodge: ' dodges', use_item: ' uses ',
+  hp_recovery: ' recovers ', parameter_increase: ' rises', parameter_decrease: ' falls',
+  enemy_hp_absorbed: ' absorbed', actor_hp_absorbed: ' absorbed', resistance_increase: ' up',
+  resistance_decrease: ' down', level_up: ' reached!', skill_learned: ' learned',
+  shop_greeting1: 'Welcome, Saint! What do you need?', shop_regreeting1: 'Anything else?',
+  shop_buy1: 'Buy', shop_sell1: 'Sell', shop_leave1: 'Leave', shop_buy_select1: 'What will you buy?',
+  shop_buy_number1: 'How many?', shop_purchased1: 'Thank you!', shop_sell_select1: 'What will you sell?',
+  shop_sell_number1: 'How many?', shop_sold1: 'Thank you!',
+  shop_greeting2: 'Welcome! What do you need?', shop_regreeting2: 'Anything else?',
+  shop_buy2: 'Buy', shop_sell2: 'Sell', shop_leave2: 'Leave', shop_buy_select2: 'What will you buy?',
+  shop_buy_number2: 'How many?', shop_purchased2: 'Thank you!', shop_sell_select2: 'What will you sell?',
+  shop_sell_number2: 'How many?', shop_sold2: 'Thank you!',
+  shop_greeting3: 'Welcome! What do you need?', shop_regreeting3: 'Anything else?',
+  shop_buy3: 'Buy', shop_sell3: 'Sell', shop_leave3: 'Leave', shop_buy_select3: 'What will you buy?',
+  shop_buy_number3: 'How many?', shop_purchased3: 'Thank you!', shop_sell_select3: 'What will you sell?',
+  shop_sell_number3: 'How many?', shop_sold3: 'Thank you!',
+  inn_a_greeting_1: 'A night here costs ', inn_a_greeting_2: ' gold.', inn_a_greeting_3: 'Will you stay?',
+  inn_a_accept: 'Yes', inn_a_cancel: 'No',
+  inn_b_greeting_1: 'A night here costs ', inn_b_greeting_2: ' gold.', inn_b_greeting_3: 'Will you stay?',
+  inn_b_accept: 'Yes', inn_b_cancel: 'No',
+  possessed_items: 'Owned', equipped_items: 'Equipped', gold: ' G',
+  battle_fight: 'Fight', battle_auto: 'Auto', battle_escape: 'Escape',
+  command_attack: 'Attack', command_defend: 'Defend', command_item: 'Item', command_skill: 'Skill',
+  menu_equipment: 'Equipment', menu_save: 'Save', menu_quit: 'Quit',
+  new_game: 'New Game', load_game: 'Load Game', exit_game: 'Exit',
+  level: 'Level', health_points: 'HP', spirit_points: 'Cosmo', normal_status: 'Normal',
+  exp_short: 'EXP', lvl_short: 'Lv', hp_short: 'HP', sp_short: 'CO', sp_cost: 'Cost',
+  attack: 'Attack', defense: 'Defense', spirit: 'Mind', agility: 'Agility',
+  weapon: 'Technique', shield: 'Shield', armor: 'Cloth', helmet: 'Helmet', accessory: 'Accessory',
+  save_game_message: 'Save to which slot?', load_game_message: 'Load which slot?', file: 'Slot',
+  exit_game_message: 'Quit the game?', yes: 'Yes', no: 'No',
+};
+
+/* every database term of this game is in Portuguese already */
+var TERMS_PT_FALLBACK = {};
